@@ -21,7 +21,12 @@ public class ConversionMain {
         String outputname = args[1];
         readFile(filename, outputname);
     }
-
+    /**
+     * Reads in data from files
+     *
+     * @param filename      Text file that contains instructions on how to create DFA
+     * @param outputname    Text file that the output will be saved as
+     */
     public static void readFile(String filename, String outputname){
         int nfa_num_states = 0; //number of states in NFA
         char[] temp_alphabet;
@@ -96,6 +101,16 @@ public class ConversionMain {
         createDFA(nfa_num_states, alphabet, nfa_transitions, nfa_start_state, nfa_accept_states, outputname);
     }
 
+    /**
+     * Main method that converts the NFA to a DFA
+     *
+     * @param nfa_num_states    The number of states that the nfa has
+     * @param alphabet          The arraylist containing the set of alphabet
+     * @param nfa_transitions   The arraylist containing all the nfa transitions
+     * @param nfa_start_state   The start state of the nfa
+     * @param nfa_accept_states The array of accepting states of the NFA
+     * @param outputname        The output file name
+     */
     public static void createDFA(int nfa_num_states, ArrayList<Character> alphabet, ArrayList<NFATransitionNode> nfa_transitions, int nfa_start_state, int[] nfa_accept_states, String outputname){
         //Get the start state for the DFA
         DFASetNode dfa_start_state = getStartState(alphabet, nfa_transitions, nfa_start_state, nfa_accept_states);
@@ -140,6 +155,13 @@ public class ConversionMain {
         writeDFA(alphabet, dfa, outputname);
     }
 
+    /**
+     * Method for writing the DFA to a text file
+     *
+     * @param dfa           The arraylist contianing the DFA nodes
+     * @param alphabet      The arraylist containing the set of alphabet
+     * @param outputname    The output file name
+     */
     public static void writeDFA(ArrayList<Character> alphabet, ArrayList<DFASetNode> dfa, String outputname){
         try {
             FileWriter writer = new FileWriter(outputname, true);
@@ -188,6 +210,13 @@ public class ConversionMain {
             System.exit(1);
         }
     }
+
+    /**
+     * Checks the DFAs for a dead node
+     *
+     * @param dfa           The arraylist contianing the DFA nodes
+     * @return -1 if none are dead, and the node number if there is a dead node
+     */
     public static int checkDeadNodeExists(ArrayList<DFASetNode> dfa){
         for(int loop = 0; loop < dfa.size(); loop++){
             DFASetNode temp = dfa.get(loop);
@@ -198,7 +227,14 @@ public class ConversionMain {
         return -1;
     }
 
-    //returns index number if it already exists
+    /**
+     * Checks the arraylist of DFA nodes to see if the index number of the DFA node
+     * we are trying to add exists or not
+     *
+     * @param dfa           The arraylist contianing the DFA nodes
+     * @param new_dfa_node  The new node we are checking for
+     * @return -1 if none are dead, and the node number if the node already exists
+     */
     public static int checkInDFA(ArrayList<DFASetNode> dfa, DFASetNode new_dfa_node){
         ArrayList<String> new_node_states = new_dfa_node.getNFAStates();
         if(new_node_states.size() == 0){
@@ -222,6 +258,17 @@ public class ConversionMain {
         }
         return -1;
     }
+    /**
+     * Creates a DFA node from an NFA node and returns it
+     *
+     * @param alphabet          The arraylist containing the set of alphabet
+     * @param nfa_transitions   The arraylist containing all the nfa transitions
+     * @param dfa_node          The node that we are creating
+     * @param nfa_accept_nodes  The accepting states of the NFA
+     * @param charac            A special transition type
+     *
+     * returns the created DFA node
+     */
     public static DFASetNode createDFASetNode(ArrayList<Character> alphabet, ArrayList<NFATransitionNode> nfa_transitions, DFASetNode dfa_node, int[] nfa_accept_nodes, char charac){
         DFASetNode ret = new DFASetNode(alphabet);
         ArrayList<String> new_nfa_states = new ArrayList<String>();
@@ -280,7 +327,16 @@ public class ConversionMain {
         return ret;
     }
 
-    //This gets the start state for the dfa and returns it located in the object DFASetNode
+    /**
+     * Finds the start state of the DFA
+     *
+     * @param alphabet          The arraylist containing the set of alphabet
+     * @param nfa_transitions   The arraylist containing all the nfa transitions
+     * @param nfa_start_state   The start state of the NFA
+     * @param nfa_accept_states The array of accept states for the NFA
+     *
+     * returns the node that is the start state
+     */
     public static DFASetNode getStartState(ArrayList<Character> alphabet, ArrayList<NFATransitionNode> nfa_transitions, int nfa_start_state, int[] nfa_accept_states){
         DFASetNode ret = new DFASetNode(alphabet);
         ret.setID(1);
@@ -319,8 +375,13 @@ public class ConversionMain {
         }
         return ret;
     }
-
-    //This method checks to see if a state is already in the ArrayList so there won't be duplicates
+    /**
+     * Checks to see if the state already exists in the arraylist
+     *
+     * @param nfa_states    The arraylist containing all the NFA states
+     * @param state         The state we are checking for
+     * returns True if it does not exist, False if it does exist
+     */
     public static boolean checkIt(ArrayList<String> nfa_states, String state){
         for(int temp = 0; temp < nfa_states.size(); temp++){
             if(nfa_states.get(temp).compareTo(state) == 0){
